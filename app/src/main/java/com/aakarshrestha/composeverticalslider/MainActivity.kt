@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             SampleAppComposeVerticalSliderTheme {
                 Surface(color = MaterialTheme.colors.background) {
+
                     var mValue by rememberSaveable { mutableStateOf(100) }
 
                     Box(
