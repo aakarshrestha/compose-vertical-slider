@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ComposeVerticalSlider.iml" filepath="$PROJECT_DIR$/.idea/modules/ComposeVerticalSlider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ComposeVerticalSlider.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ComposeVerticalSlider.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/composeVerticalSlider/ComposeVerticalSlider.composeVerticalSlider.iml" filepath="$PROJECT_DIR$/.idea/modules/composeVerticalSlider/ComposeVerticalSlider.composeVerticalSlider.iml" />
+    </modules>
+  </component>
+</project>

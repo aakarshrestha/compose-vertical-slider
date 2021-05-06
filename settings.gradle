@@ -1,0 +1,3 @@
+rootProject.name = "ComposeVerticalSlider"
+include ':app'
+include ':composeVerticalSlider'
