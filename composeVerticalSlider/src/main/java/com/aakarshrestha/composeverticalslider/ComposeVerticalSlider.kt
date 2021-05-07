@@ -53,6 +53,7 @@ fun ComposeVerticalSlider(
     val radiusY = 80f
 
     var adjustTop by rememberSaveable { mutableStateOf(bottom) }
+    var progressValue by rememberSaveable { mutableStateOf(0) }
 
     val rect = Rect(left, top, right, bottom)
     val trackPaint = Paint().apply {
@@ -79,6 +80,7 @@ fun ComposeVerticalSlider(
                                 adjustTop = it
                             },
                             progressValue = {
+                                progressValue = it
                                 onProgressChanged(it)
                             }
                         )
@@ -92,6 +94,7 @@ fun ComposeVerticalSlider(
                                 adjustTop = it
                             },
                             progressValue = {
+                                progressValue = it
                                 onStopTrackingTouch(it)
                             }
                         )
@@ -119,6 +122,7 @@ fun ComposeVerticalSlider(
         aCanvas.drawRect(rect, trackPaint)
 
         if (rect.width > MIN_VALUE && rect.height > MIN_VALUE) {
+            adjustTop = calculateAdjustTopFromProgressValue(progressValue, canvasHeight)
             aCanvas.drawRect(left, adjustTop, right, bottom, progressPaint)
         }
     }
@@ -150,4 +154,11 @@ private fun updateOnTouch(
  */
 private fun calculateProgress(adjustTop: Float, canvasHeight: Int): Int {
     return MAX_VALUE - (adjustTop / canvasHeight).times(100).roundToInt()
+}
+
+/**
+ * Calculate the y axis value based on progress value.
+ */
+fun calculateAdjustTopFromProgressValue(progressValue: Int, canvasHeight: Int): Float {
+    return (MAX_VALUE - progressValue).times(canvasHeight).div(100).toFloat()
 }
