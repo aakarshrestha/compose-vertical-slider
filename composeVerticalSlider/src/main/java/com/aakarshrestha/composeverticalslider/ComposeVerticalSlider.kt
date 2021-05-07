@@ -48,13 +48,13 @@ class ComposeVerticalSliderState {
         internal set
 
     var progressValue = mutableStateOf(0)
-    internal set
+        internal set
 
-    private fun updateAdjustTopValue(value: Float) {
+    fun updateAdjustTopValue(value: Float) {
         this.adjustTop.value = value
     }
 
-    private fun updateProgressValue(value: Int) {
+    fun updateProgressValue(value: Int) {
         this.progressValue.value = value
     }
 
@@ -135,7 +135,7 @@ fun ComposeVerticalSlider(
     val radiusY = 80f
 
     var adjustTop by rememberSaveable { state.adjustTop }
-    val progressValue by rememberSaveable {
+    var progressValue by rememberSaveable {
 
         if (progressValueSet != null) {
             state.progressValue.value = progressValueSet
@@ -165,20 +165,22 @@ fun ComposeVerticalSlider(
             .pointerInteropFilter { motionEvent ->
                 when(motionEvent.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        state.isStarted.value = true
+
                         true
                     }
                     MotionEvent.ACTION_MOVE -> {
-                        state.isMoving.value = true
                         state.updateOnTouch(motionEvent, canvasHeight)
-                        onProgressChanged(state.progressValue.value)
+                        adjustTop = state.adjustTop.value
+                        progressValue = state.progressValue.value
+                        onProgressChanged(progressValue)
 
                         true
                     }
                     MotionEvent.ACTION_UP -> {
-                        state.isStopped.value = true
                         state.updateOnTouch(motionEvent, canvasHeight)
-                        onStopTrackingTouch(state.progressValue.value)
+                        adjustTop = state.adjustTop.value
+                        progressValue = state.progressValue.value
+                        onStopTrackingTouch(progressValue)
 
                         true
                     }
