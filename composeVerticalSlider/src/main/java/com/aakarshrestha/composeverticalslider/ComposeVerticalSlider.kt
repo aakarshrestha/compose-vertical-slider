@@ -22,6 +22,18 @@ import kotlin.math.roundToInt
 private const val MAX_VALUE = 100
 private const val MIN_VALUE = 0
 
+/**
+ * [ComposeVerticalSlider] allows users to make selections from the range of values
+ * by dragging the slider in vertical axis.
+ *
+ * The min value that is allowed to choose is 0 and max value is 100.
+ *
+ * @param trackColor that can be set to a desired color.
+ * @param progressTrackColor that can be set to a desired color.
+ * @param onProgressChanged lambda that is invoked when the slider value changes when [MotionEvent.ACTION_MOVE] is triggered.
+ * @param onStopTrackingTouch lambda that is invoked when the slider value changes when [MotionEvent.ACTION_UP] is triggered.
+ */
+
 @Composable
 fun ComposeVerticalSlider(
     trackColor: Color = Color.LightGray,
@@ -113,6 +125,11 @@ fun ComposeVerticalSlider(
 
 }
 
+/**
+ * This method is executed when [MotionEvent] is [MotionEvent.ACTION_MOVE] and [MotionEvent.ACTION_UP]
+ * @param adjustTopValue lambda that provides the changed value to adjust the slider in vertical axis.
+ * @param progressValue lambda that provides the changed value to adjust the progress that is in the range of 0 to 100.
+ */
 private fun updateOnTouch(
     motionEvent: MotionEvent,
     canvasHeight: Int,
@@ -128,6 +145,9 @@ private fun updateOnTouch(
     progressValue(progress)
 }
 
+/**
+ * Outputs the progress value when slider is updated in vertical axis.
+ */
 private fun calculateProgress(adjustTop: Float, canvasHeight: Int): Int {
     return MAX_VALUE - (adjustTop / canvasHeight).times(100).roundToInt()
 }
