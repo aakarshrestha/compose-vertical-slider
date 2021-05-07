@@ -1,7 +1,10 @@
 package com.aakarshrestha.composeverticalslider
 
 import android.view.MotionEvent
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.MutatePriority
+import androidx.compose.foundation.MutatorMutex
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +25,83 @@ import kotlin.math.roundToInt
 private const val MAX_VALUE = 100
 private const val MIN_VALUE = 0
 
+@Composable
+fun rememberComposeVerticalSliderState(): ComposeVerticalSliderState {
+    return remember {
+        ComposeVerticalSliderState()
+    }
+}
+
+class ComposeVerticalSliderState {
+
+    private val animateToPosition = Animatable(0f)
+
+    private val mutatorMutex = MutatorMutex()
+
+    val isMoving = mutableStateOf(false)
+
+    val isStarted = mutableStateOf(false)
+
+    val isStopped = mutableStateOf(false)
+
+    var adjustTop = mutableStateOf(0f)
+        internal set
+
+    var progressValue = mutableStateOf(0)
+    internal set
+
+    private fun updateAdjustTopValue(value: Float) {
+        this.adjustTop.value = value
+    }
+
+    private fun updateProgressValue(value: Int) {
+        this.progressValue.value = value
+    }
+
+    internal suspend fun updateAnimateProgressTrackValue(value: Float) {
+        mutatorMutex.mutate(MutatePriority.UserInput) {
+            animateToPosition.snapTo(value)
+        }
+    }
+
+    internal suspend fun animateProgressTrack () {
+        mutatorMutex.mutate {
+            animateToPosition.animateTo(adjustTop.value)
+        }
+    }
+
+
+    /**
+     * This method is executed when [MotionEvent] is [MotionEvent.ACTION_MOVE] and [MotionEvent.ACTION_UP]
+     */
+    internal fun updateOnTouch(
+        motionEvent: MotionEvent,
+        canvasHeight: Int
+    ) {
+        val y = motionEvent.y.roundToInt()
+
+        updateAdjustTopValue(y.toFloat())
+
+        val progress = calculateProgress(y.toFloat(), canvasHeight).coerceIn(MIN_VALUE, MAX_VALUE)
+        updateProgressValue(progress)
+
+    }
+
+    /**
+     * Outputs the progress value when slider is updated in vertical axis.
+     */
+    private fun calculateProgress(adjustTop: Float, canvasHeight: Int): Int {
+        return MAX_VALUE - (adjustTop / canvasHeight).times(100).roundToInt()
+    }
+
+    /**
+     * Calculate the y axis value based on progress value.
+     */
+    fun calculateAdjustTopFromProgressValue(progressValue: Int, canvasHeight: Int): Float {
+        return (MAX_VALUE - progressValue).times(canvasHeight).div(100).toFloat()
+    }
+}
+
 /**
  * [ComposeVerticalSlider] allows users to make selections from the range of values
  * by dragging the slider in vertical axis.
@@ -36,6 +116,8 @@ private const val MIN_VALUE = 0
 
 @Composable
 fun ComposeVerticalSlider(
+    state: ComposeVerticalSliderState,
+    progressValueSet: Int? = null,
     trackColor: Color = Color.LightGray,
     progressTrackColor: Color = Color.Green,
     onProgressChanged: (Int) -> Unit,
@@ -52,8 +134,18 @@ fun ComposeVerticalSlider(
     val radiusX = 80f
     val radiusY = 80f
 
-    var adjustTop by rememberSaveable { mutableStateOf(bottom) }
-    var progressValue by rememberSaveable { mutableStateOf(0) }
+    var adjustTop by rememberSaveable { state.adjustTop }
+    val progressValue by rememberSaveable {
+
+        if (progressValueSet != null) {
+            state.progressValue.value = progressValueSet
+            onProgressChanged(state.progressValue.value)
+            onStopTrackingTouch(state.progressValue.value)
+        }
+
+        state.progressValue
+
+    }
 
     val rect = Rect(left, top, right, bottom)
     val trackPaint = Paint().apply {
@@ -72,32 +164,21 @@ fun ComposeVerticalSlider(
         modifier = Modifier
             .pointerInteropFilter { motionEvent ->
                 when(motionEvent.action) {
-                    MotionEvent.ACTION_DOWN -> true
+                    MotionEvent.ACTION_DOWN -> {
+                        state.isStarted.value = true
+                        true
+                    }
                     MotionEvent.ACTION_MOVE -> {
-
-                        updateOnTouch(motionEvent, canvasHeight,
-                            adjustTopValue = {
-                                adjustTop = it
-                            },
-                            progressValue = {
-                                progressValue = it
-                                onProgressChanged(it)
-                            }
-                        )
+                        state.isMoving.value = true
+                        state.updateOnTouch(motionEvent, canvasHeight)
+                        onProgressChanged(state.progressValue.value)
 
                         true
                     }
                     MotionEvent.ACTION_UP -> {
-
-                        updateOnTouch(motionEvent, canvasHeight,
-                            adjustTopValue = {
-                                adjustTop = it
-                            },
-                            progressValue = {
-                                progressValue = it
-                                onStopTrackingTouch(it)
-                            }
-                        )
+                        state.isStopped.value = true
+                        state.updateOnTouch(motionEvent, canvasHeight)
+                        onStopTrackingTouch(state.progressValue.value)
 
                         true
                     }
@@ -122,43 +203,9 @@ fun ComposeVerticalSlider(
         aCanvas.drawRect(rect, trackPaint)
 
         if (rect.width > MIN_VALUE && rect.height > MIN_VALUE) {
-            adjustTop = calculateAdjustTopFromProgressValue(progressValue, canvasHeight)
+            adjustTop = state.calculateAdjustTopFromProgressValue(progressValue, canvasHeight)
             aCanvas.drawRect(left, adjustTop, right, bottom, progressPaint)
         }
     }
 
-}
-
-/**
- * This method is executed when [MotionEvent] is [MotionEvent.ACTION_MOVE] and [MotionEvent.ACTION_UP]
- * @param adjustTopValue lambda that provides the changed value to adjust the slider in vertical axis.
- * @param progressValue lambda that provides the changed value to adjust the progress that is in the range of 0 to 100.
- */
-private fun updateOnTouch(
-    motionEvent: MotionEvent,
-    canvasHeight: Int,
-    adjustTopValue: (Float) -> Unit,
-    progressValue: (Int) -> Unit
-) {
-
-    val y = motionEvent.y.roundToInt()
-
-    adjustTopValue(y.toFloat())
-    val progress = calculateProgress(y.toFloat(), canvasHeight).coerceIn(MIN_VALUE, MAX_VALUE)
-
-    progressValue(progress)
-}
-
-/**
- * Outputs the progress value when slider is updated in vertical axis.
- */
-private fun calculateProgress(adjustTop: Float, canvasHeight: Int): Int {
-    return MAX_VALUE - (adjustTop / canvasHeight).times(100).roundToInt()
-}
-
-/**
- * Calculate the y axis value based on progress value.
- */
-fun calculateAdjustTopFromProgressValue(progressValue: Int, canvasHeight: Int): Float {
-    return (MAX_VALUE - progressValue).times(canvasHeight).div(100).toFloat()
 }

@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -33,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             SampleAppComposeVerticalSliderTheme {
                 Surface(color = MaterialTheme.colors.background) {
 
-                    var mValue by rememberSaveable { mutableStateOf(0) }
+                    var sliderProgressValue by rememberSaveable { mutableStateOf(34) }
 
                     Box(
                         modifier = Modifier
@@ -43,7 +42,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         Column {
 
-                            Text("$mValue", textAlign = TextAlign.Center, fontSize = 50.sp)
+                            Text("$sliderProgressValue", textAlign = TextAlign.Center, fontSize = 50.sp)
 
                             Spacer(modifier = Modifier.padding(10.dp))
 
@@ -53,12 +52,13 @@ class MainActivity : AppCompatActivity() {
                                 shape = RoundedCornerShape(30.dp),
                                 elevation = 5.dp
                             ) {
-                                VerticalSlider {
-                                    mValue = it
+                                VerticalSlider(
+                                    progressValue = sliderProgressValue
+                                ) {
+                                    sliderProgressValue = it
                                 }
                             }
                         }
-
                     }
                 }
             }
@@ -66,8 +66,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun VerticalSlider(value: (Int) -> Unit) {
+    fun VerticalSlider(progressValue: Int? = null, value: (Int) -> Unit) {
+
+        val state = rememberComposeVerticalSliderState()
+
         ComposeVerticalSlider(
+            state = state,
+            progressValueSet = progressValue,
             onProgressChanged = {
                 value(it)
             },
