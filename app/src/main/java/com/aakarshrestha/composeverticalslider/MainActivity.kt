@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
 
         ComposeVerticalSlider(
             state = state,
+            enabled = false,
             progressValueSet = progressValue,
             onProgressChanged = {
                 value(it)

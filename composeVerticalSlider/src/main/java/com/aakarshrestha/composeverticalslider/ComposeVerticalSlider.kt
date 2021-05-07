@@ -44,6 +44,8 @@ class ComposeVerticalSliderState {
 
     val isStopped = mutableStateOf(false)
 
+    val isEnabled = mutableStateOf(true)
+
     var adjustTop = mutableStateOf(0f)
         internal set
 
@@ -78,6 +80,9 @@ class ComposeVerticalSliderState {
         motionEvent: MotionEvent,
         canvasHeight: Int
     ) {
+
+        if (!isEnabled.value) return
+
         val y = motionEvent.y.roundToInt()
 
         updateAdjustTopValue(y.toFloat())
@@ -118,6 +123,7 @@ class ComposeVerticalSliderState {
 fun ComposeVerticalSlider(
     state: ComposeVerticalSliderState,
     progressValueSet: Int? = null,
+    enabled: Boolean = true,
     trackColor: Color = Color.LightGray,
     progressTrackColor: Color = Color.Green,
     onProgressChanged: (Int) -> Unit,
@@ -158,6 +164,14 @@ fun ComposeVerticalSlider(
         color = progressTrackColor
         isAntiAlias = true
         strokeWidth = 10f
+    }
+
+    LaunchedEffect(state.isEnabled.value) {
+        if (!state.isEnabled.value) {
+            progressPaint.apply {
+                color = Color.Gray
+            }
+        }
     }
 
     Canvas(
@@ -208,6 +222,8 @@ fun ComposeVerticalSlider(
             adjustTop = state.calculateAdjustTopFromProgressValue(progressValue, canvasHeight)
             aCanvas.drawRect(left, adjustTop, right, bottom, progressPaint)
         }
+
+        state.isEnabled.value = enabled
     }
 
 }
