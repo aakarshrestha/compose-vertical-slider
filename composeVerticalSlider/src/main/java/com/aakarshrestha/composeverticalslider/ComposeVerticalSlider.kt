@@ -1,10 +1,7 @@
 package com.aakarshrestha.composeverticalslider
 
 import android.view.MotionEvent
-import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.MutatePriority
-import androidx.compose.foundation.MutatorMutex
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +22,9 @@ import kotlin.math.roundToInt
 private const val MAX_VALUE = 100
 private const val MIN_VALUE = 0
 
+/**
+ * Creates a [ComposeVerticalSliderState] that is remembered across compositions.
+ */
 @Composable
 fun rememberComposeVerticalSliderState(): ComposeVerticalSliderState {
     return remember {
@@ -32,19 +32,13 @@ fun rememberComposeVerticalSliderState(): ComposeVerticalSliderState {
     }
 }
 
+/**
+ * [ComposeVerticalSliderState] maintains the state of [ComposeVerticalSlider].
+ */
 class ComposeVerticalSliderState {
 
-    private val animateToPosition = Animatable(0f)
-
-    private val mutatorMutex = MutatorMutex()
-
-    val isMoving = mutableStateOf(false)
-
-    val isStarted = mutableStateOf(false)
-
-    val isStopped = mutableStateOf(false)
-
-    val isEnabled = mutableStateOf(true)
+    var isEnabled = mutableStateOf(true)
+        internal set
 
     var adjustTop = mutableStateOf(0f)
         internal set
@@ -52,24 +46,12 @@ class ComposeVerticalSliderState {
     var progressValue = mutableStateOf(0)
         internal set
 
-    fun updateAdjustTopValue(value: Float) {
+    private fun updateAdjustTopValue(value: Float) {
         this.adjustTop.value = value
     }
 
-    fun updateProgressValue(value: Int) {
+    private fun updateProgressValue(value: Int) {
         this.progressValue.value = value
-    }
-
-    internal suspend fun updateAnimateProgressTrackValue(value: Float) {
-        mutatorMutex.mutate(MutatePriority.UserInput) {
-            animateToPosition.snapTo(value)
-        }
-    }
-
-    internal suspend fun animateProgressTrack () {
-        mutatorMutex.mutate {
-            animateToPosition.animateTo(adjustTop.value)
-        }
     }
 
 

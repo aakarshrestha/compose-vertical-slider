@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
             SampleAppComposeVerticalSliderTheme {
                 Surface(color = MaterialTheme.colors.background) {
 
-                    var sliderProgressValue by rememberSaveable { mutableStateOf(34) }
+                    var sliderProgressValue by rememberSaveable { mutableStateOf(50) }
 
                     Box(
                         modifier = Modifier
@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
                         contentAlignment = Alignment.Center
 
                     ) {
+
                         Column {
 
                             Text("$sliderProgressValue", textAlign = TextAlign.Center, fontSize = 50.sp)
