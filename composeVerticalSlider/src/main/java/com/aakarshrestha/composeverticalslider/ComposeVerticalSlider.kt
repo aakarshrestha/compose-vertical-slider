@@ -167,6 +167,11 @@ fun ComposeVerticalSlider(
     }
     val path = Path()
 
+    LaunchedEffect(state.isEnabled, enabledState) {
+        state.isEnabled.value = enabled
+        updateSliderColor(progressPaint, enabledState)
+    }
+
     Canvas(
         modifier = Modifier
             .pointerInteropFilter { motionEvent ->
@@ -208,11 +213,7 @@ fun ComposeVerticalSlider(
 
         val aCanvas = drawContext.canvas
 
-        if (!enabledState) {
-            progressPaint.apply {
-                color = Color.Gray
-            }
-        }
+        updateSliderColor(progressPaint, enabledState)
 
         path.addRoundRect(roundRect = RoundRect(left, top, right, bottom, CornerRadius(x = radiusX, y = radiusY)) )
         aCanvas.clipPath(path = path, ClipOp.Intersect)
@@ -223,7 +224,13 @@ fun ComposeVerticalSlider(
             adjustTop = state.calculateAdjustTopFromProgressValue(progressValue, canvasHeight)
             aCanvas.drawRect(left, adjustTop, right, bottom, progressPaint)
         }
+    }
+}
 
-        state.isEnabled.value = enabled
+private fun updateSliderColor(paint: Paint, enabled: Boolean) {
+    if (!enabled) {
+        paint.apply {
+            color = Color.Gray
+        }
     }
 }
