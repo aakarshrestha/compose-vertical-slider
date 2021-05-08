@@ -140,6 +140,7 @@ fun ComposeVerticalSlider(
     val radiusX = 80f
     val radiusY = 80f
 
+    val enabledState by rememberSaveable { state.isEnabled }
     var adjustTop by rememberSaveable { state.adjustTop }
     var progressValue by rememberSaveable {
 
@@ -159,44 +160,39 @@ fun ComposeVerticalSlider(
         isAntiAlias = true
         strokeWidth = 10f
     }
-
     val progressPaint = Paint().apply {
         color = progressTrackColor
         isAntiAlias = true
         strokeWidth = 10f
     }
-
-    LaunchedEffect(state.isEnabled.value) {
-        if (!state.isEnabled.value) {
-            progressPaint.apply {
-                color = Color.Gray
-            }
-        }
-    }
+    val path = Path()
 
     Canvas(
         modifier = Modifier
             .pointerInteropFilter { motionEvent ->
                 when(motionEvent.action) {
                     MotionEvent.ACTION_DOWN -> {
-
-                        true
+                        enabledState
                     }
                     MotionEvent.ACTION_MOVE -> {
-                        state.updateOnTouch(motionEvent, canvasHeight)
-                        adjustTop = state.adjustTop.value
-                        progressValue = state.progressValue.value
-                        onProgressChanged(progressValue)
+                        if (enabledState) {
+                            state.updateOnTouch(motionEvent, canvasHeight)
+                            adjustTop = state.adjustTop.value
+                            progressValue = state.progressValue.value
+                            onProgressChanged(progressValue)
+                        }
 
-                        true
+                        enabledState
                     }
                     MotionEvent.ACTION_UP -> {
-                        state.updateOnTouch(motionEvent, canvasHeight)
-                        adjustTop = state.adjustTop.value
-                        progressValue = state.progressValue.value
-                        onStopTrackingTouch(progressValue)
+                        if (enabledState) {
+                            state.updateOnTouch(motionEvent, canvasHeight)
+                            adjustTop = state.adjustTop.value
+                            progressValue = state.progressValue.value
+                            onStopTrackingTouch(progressValue)
+                        }
 
-                        true
+                        enabledState
                     }
                     else -> false
                 }
@@ -212,7 +208,12 @@ fun ComposeVerticalSlider(
 
         val aCanvas = drawContext.canvas
 
-        val path = Path()
+        if (!enabledState) {
+            progressPaint.apply {
+                color = Color.Gray
+            }
+        }
+
         path.addRoundRect(roundRect = RoundRect(left, top, right, bottom, CornerRadius(x = radiusX, y = radiusY)) )
         aCanvas.clipPath(path = path, ClipOp.Intersect)
 
@@ -225,5 +226,4 @@ fun ComposeVerticalSlider(
 
         state.isEnabled.value = enabled
     }
-
 }
