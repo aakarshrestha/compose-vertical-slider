@@ -95,6 +95,9 @@ class ComposeVerticalSliderState {
  *
  * The min value that is allowed to choose is 0 and max value is 100.
  *
+ * @param state maintains the state of ComposeVerticalSlider.
+ * @param progressValue current value of the Slider. It can be null or the value can be assigned to it.
+ * @param enabled whether or not component is enabled and can we interacted with or not.
  * @param trackColor that can be set to a desired color.
  * @param progressTrackColor that can be set to a desired color.
  * @param onProgressChanged lambda that is invoked when the slider value changes when [MotionEvent.ACTION_MOVE] is triggered.
