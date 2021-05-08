@@ -51,7 +51,7 @@ fun ComposeVerticalSlider(
 * @param onProgressChanged lambda that is invoked when the slider value changes when [MotionEvent.ACTION_MOVE] is triggered.
 * @param onStopTrackingTouch lambda that is invoked when the slider value changes when [MotionEvent.ACTION_UP] is triggered.
 
-**Implementation:** Check out the app to see how it works.
+# Implementation: Check out the app to see how it works.
 
 ```
 @Composable
