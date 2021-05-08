@@ -9,11 +9,8 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -72,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 
         ComposeVerticalSlider(
             state = state,
-            enabled = true,
+            enabled = state.isEnabled.value,
             progressValueSet = progressValue,
             onProgressChanged = {
                 value(it)

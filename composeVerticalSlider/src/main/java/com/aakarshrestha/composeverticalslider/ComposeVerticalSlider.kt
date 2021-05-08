@@ -161,15 +161,14 @@ fun ComposeVerticalSlider(
         strokeWidth = 10f
     }
     val progressPaint = Paint().apply {
-        color = progressTrackColor
+        color = if (enabledState) progressTrackColor else Color.Gray
         isAntiAlias = true
         strokeWidth = 10f
     }
     val path = Path()
 
-    LaunchedEffect(state.isEnabled, enabledState) {
+    LaunchedEffect(enabledState) {
         state.isEnabled.value = enabled
-        updateSliderColor(progressPaint, enabledState)
     }
 
     Canvas(
@@ -213,8 +212,6 @@ fun ComposeVerticalSlider(
 
         val aCanvas = drawContext.canvas
 
-        updateSliderColor(progressPaint, enabledState)
-
         path.addRoundRect(roundRect = RoundRect(left, top, right, bottom, CornerRadius(x = radiusX, y = radiusY)) )
         aCanvas.clipPath(path = path, ClipOp.Intersect)
 
@@ -223,14 +220,6 @@ fun ComposeVerticalSlider(
         if (rect.width > MIN_VALUE && rect.height > MIN_VALUE) {
             adjustTop = state.calculateAdjustTopFromProgressValue(progressValue, canvasHeight)
             aCanvas.drawRect(left, adjustTop, right, bottom, progressPaint)
-        }
-    }
-}
-
-private fun updateSliderColor(paint: Paint, enabled: Boolean) {
-    if (!enabled) {
-        paint.apply {
-            color = Color.Gray
         }
     }
 }
