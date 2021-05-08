@@ -57,19 +57,19 @@ fun ComposeVerticalSlider(
 @Composable
 fun VerticalSlider(progressValue: Int? = null, value: (Int) -> Unit) {
 
-val state = rememberComposeVerticalSliderState()
+    val state = rememberComposeVerticalSliderState()
 
-ComposeVerticalSlider(
-    state = state,
-    enabled = state.isEnabled.value,
-    progressValueSet = progressValue,
-    onProgressChanged = {
-	value(it)
-    },
-    onStopTrackingTouch = {
-	value(it)
-    }
-)
+    ComposeVerticalSlider(
+        state = state,
+        enabled = state.isEnabled.value,
+        progressValueSet = progressValue,
+        onProgressChanged = {
+	    value(it)
+        },
+        onStopTrackingTouch = {
+	    value(it)
+        }
+    )
 }
 ```
 
