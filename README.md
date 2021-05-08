@@ -73,6 +73,9 @@ fun VerticalSlider(progressValue: Int? = null, value: (Int) -> Unit) {
 }
 ```
 
+# Coming soon
+- able to set width and height to ComposeVerticalSlider.
+
 # License
 
 ```
