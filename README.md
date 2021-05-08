@@ -2,7 +2,7 @@ Release version: [![](https://jitpack.io/v/aakarshrestha/compose-vertical-slider
 
 # compose-vertical-slider
 
-A simple verticle slider that is created in Jetpack Compose. ComposeVerticalSlider allows users to make selections from the range of values by dragging the slider in vertical axis.
+A simple verticle slider that is created in Jetpack Compose. ComposeVerticalSlider allows users to make selections from the range of values by dragging the slider in vertical axis. With screen orientation change, ComposeVerticalSlider also adjusts accordingly.
 
 The min value that is allowed to choose is 0 and max value is 100.
 
@@ -34,12 +34,18 @@ dependencies {
 ```
 @Composable
 fun ComposeVerticalSlider(
+    state: ComposeVerticalSliderState,
+    progressValue: Int? = null,
+    enabled: Boolean = true,
     trackColor: Color = Color.LightGray,
     progressTrackColor: Color = Color.Green,
     onProgressChanged: (Int) -> Unit,
     onStopTrackingTouch: (Int) -> Unit
 )
 ```
+* @param state maintains the state of ComposeVerticalSlider.
+* @param progressValue current value of the Slider. It can be null or the value can be assigned to it.
+* @param enabled whether or not component is enabled and can we interacted with or not.
 * @param trackColor that can be set to a desired color.
 * @param progressTrackColor that can be set to a desired color.
 * @param onProgressChanged lambda that is invoked when the slider value changes when [MotionEvent.ACTION_MOVE] is triggered.
@@ -49,15 +55,21 @@ fun ComposeVerticalSlider(
 
 ```
 @Composable
-fun VerticalSlider(value: (Int) -> Unit) {
-    ComposeVerticalSlider(
-        onProgressChanged = {
-            value(it)
-        },
-        onStopTrackingTouch = {
-            value(it)
-        }
-    )
+fun VerticalSlider(progressValue: Int? = null, value: (Int) -> Unit) {
+
+val state = rememberComposeVerticalSliderState()
+
+ComposeVerticalSlider(
+    state = state,
+    enabled = state.isEnabled.value,
+    progressValueSet = progressValue,
+    onProgressChanged = {
+	value(it)
+    },
+    onStopTrackingTouch = {
+	value(it)
+    }
+)
 }
 ```
 
