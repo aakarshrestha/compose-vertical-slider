@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 
@@ -98,6 +99,9 @@ class ComposeVerticalSliderState {
  * @param state maintains the state of ComposeVerticalSlider.
  * @param progressValue current value of the Slider. It can be null or the value can be assigned to it.
  * @param enabled whether or not component is enabled and can we interacted with or not.
+ * @param width width of the slider
+ * @param height height of the slider
+ * @param radius corner curves of the slider
  * @param trackColor that can be set to a desired color.
  * @param progressTrackColor that can be set to a desired color.
  * @param onProgressChanged lambda that is invoked when the slider value changes when [MotionEvent.ACTION_MOVE] is triggered.
@@ -107,8 +111,11 @@ class ComposeVerticalSliderState {
 @Composable
 fun ComposeVerticalSlider(
     state: ComposeVerticalSliderState,
-    progressValueSet: Int? = null,
+    progressValue: Int? = null,
     enabled: Boolean = true,
+    width: Dp = 140.dp,
+    height: Dp = 300.dp,
+    radius: CornerRadius = CornerRadius(80f, 80f),
     trackColor: Color = Color.LightGray,
     progressTrackColor: Color = Color.Green,
     onProgressChanged: (Int) -> Unit,
@@ -122,15 +129,15 @@ fun ComposeVerticalSlider(
 
     var canvasHeight by remember { mutableStateOf(0) }
 
-    val radiusX = 80f
-    val radiusY = 80f
+    val radiusX = radius.x
+    val radiusY = radius.y
 
     val enabledState by rememberSaveable { state.isEnabled }
     var adjustTop by rememberSaveable { state.adjustTop }
-    var progressValue by rememberSaveable {
+    var progressValueData by rememberSaveable {
 
-        if (progressValueSet != null) {
-            state.progressValue.value = progressValueSet
+        if (progressValue != null) {
+            state.progressValue.value = progressValue
             onProgressChanged(state.progressValue.value)
             onStopTrackingTouch(state.progressValue.value)
         }
@@ -167,8 +174,8 @@ fun ComposeVerticalSlider(
                         if (enabledState) {
                             state.updateOnTouch(motionEvent, canvasHeight)
                             adjustTop = state.adjustTop.value
-                            progressValue = state.progressValue.value
-                            onProgressChanged(progressValue)
+                            progressValueData = state.progressValue.value
+                            onProgressChanged(progressValueData)
                         }
 
                         enabledState
@@ -177,8 +184,8 @@ fun ComposeVerticalSlider(
                         if (enabledState) {
                             state.updateOnTouch(motionEvent, canvasHeight)
                             adjustTop = state.adjustTop.value
-                            progressValue = state.progressValue.value
-                            onStopTrackingTouch(progressValue)
+                            progressValueData = state.progressValue.value
+                            onStopTrackingTouch(progressValueData)
                         }
 
                         enabledState
@@ -186,8 +193,8 @@ fun ComposeVerticalSlider(
                     else -> false
                 }
             }
-            .width(180.dp)
-            .height(360.dp)
+            .width(width)
+            .height(height)
     ) {
 
         canvasHeight = size.height.roundToInt()
@@ -203,7 +210,7 @@ fun ComposeVerticalSlider(
         aCanvas.drawRect(rect, trackPaint)
 
         if (rect.width > MIN_VALUE && rect.height > MIN_VALUE) {
-            adjustTop = state.calculateAdjustTopFromProgressValue(progressValue, canvasHeight)
+            adjustTop = state.calculateAdjustTopFromProgressValue(progressValueData, canvasHeight)
             aCanvas.drawRect(left, adjustTop, right, bottom, progressPaint)
         }
     }
