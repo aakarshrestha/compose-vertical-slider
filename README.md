@@ -2,7 +2,7 @@ Release version: [![](https://jitpack.io/v/aakarshrestha/compose-vertical-slider
 
 # compose-vertical-slider
 
-A simple verticle slider that is created in Jetpack Compose. ComposeVerticalSlider allows users to make selections from the range of values by dragging the slider in vertical axis. With screen orientation change, ComposeVerticalSlider also adjusts accordingly.
+A simple vertical slider that is created in Jetpack Compose. ComposeVerticalSlider allows users to make selections from the range of values by dragging the slider in vertical axis. With screen orientation change, ComposeVerticalSlider also adjusts accordingly.
 
 The min value that is allowed to choose is 0 and max value is 100.
 
