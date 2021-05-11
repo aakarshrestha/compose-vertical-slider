@@ -37,6 +37,9 @@ fun ComposeVerticalSlider(
     state: ComposeVerticalSliderState,
     progressValue: Int? = null,
     enabled: Boolean = true,
+    width: Dp = 140.dp,
+    height: Dp = 300.dp,
+    radius: CornerRadius = CornerRadius(80f, 80f),
     trackColor: Color = Color.LightGray,
     progressTrackColor: Color = Color.Green,
     onProgressChanged: (Int) -> Unit,
@@ -46,6 +49,9 @@ fun ComposeVerticalSlider(
 * @param state maintains the state of ComposeVerticalSlider.
 * @param progressValue current value of the Slider. It can be null or the value can be assigned to it.
 * @param enabled whether or not component is enabled and can we interacted with or not.
+* @param width width of the slider
+* @param height height of the slider
+* @param radius corner curves of the slider
 * @param trackColor that can be set to a desired color.
 * @param progressTrackColor that can be set to a desired color.
 * @param onProgressChanged lambda that is invoked when the slider value changes when [MotionEvent.ACTION_MOVE] is triggered.
@@ -72,9 +78,6 @@ fun VerticalSlider(progressValue: Int? = null, value: (Int) -> Unit) {
     )
 }
 ```
-
-# Coming soon
-- able to set width and height to ComposeVerticalSlider.
 
 # License
 
