@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.aakarshrestha:compose-vertical-slider:0.4.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/17fcc802704fa5d8d9564bc76c553b90/compose-vertical-slider-0.4.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/17fcc802704fa5d8d9564bc76c553b90/compose-vertical-slider-0.4.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/17fcc802704fa5d8d9564bc76c553b90/compose-vertical-slider-0.4.0/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.aakarshrestha/compose-vertical-slider/0.4.0/a31a1e4c85cc700d83a92c095497bfec1079e979/compose-vertical-slider-0.4.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
